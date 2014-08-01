@@ -141,6 +141,9 @@
         /// </returns>
         public static string MinifyHtml(string htmlContents)
         {
+            // Replace accented characters with HTML entities 
+            htmlContents = replaceHtmlEntities(htmlContents);
+
             // Replace line comments
             htmlContents = Regex.Replace(htmlContents, @"// (.*?)\r?\n", "", RegexOptions.Singleline);
 
@@ -164,6 +167,23 @@
                 htmlContents = htmlContents.Insert(firstEndBracketPosition, ">");
             }
             return htmlContents.Trim();
+        }
+
+        /// <summary>
+        /// Replace accented characters with HTML entities 
+        /// </summary>
+        /// <param name="str">html with accents</param>
+        /// <returns>html with html entides</returns>
+        protected static string replaceHtmlEntities(string str)
+        {
+            string[] accents = new string[] { "ç", "Ç", "á", "é", "í", "ó", "ú", "ý", "Á", "É", "Í", "Ó", "Ú", "Ý", "à", "è", "ì", "ò", "ù", "À", "È", "Ì", "Ò", "Ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "Ä", "Ë", "Ï", "Ö", "Ü", "Ã", "Õ", "Ñ", "â", "ê", "î", "ô", "û", "Â", "Ê", "Î", "Ô", "Û" };
+
+            for (int i = 0; i < accents.Length; i++)
+            {
+                str = str.Replace(accents[i], System.Net.WebUtility.HtmlEncode(accents[i]));
+            }
+            return str;
+
         }
     }
 }
